@@ -1,0 +1,161 @@
+CREATE TABLE CUSTOMERS (
+  CUSTOMER_ID  INT  UNIQUE ,
+    NAME TEXT ,
+   EMAIL TEXT,
+  PHONE TEXT
+  ) ;
+
+  CREATE TABLE ORDERING_MENU (
+    CUSTOMER_ID INT ,
+    MENU_ID INT  ,
+    MENU TEXT,
+    CATEGORY TEXT ,
+    UNIT INT ,
+    PRICE INT   
+    ) ;
+
+
+
+    CREATE TABLE ORDER_SHIPPING (
+      CUSTOMER_ID INT ,
+      MENU_ID INT ,
+        ORDER_DATE DATE,
+        ORDER_TIME TIME,
+        PICKUP_DATE DATE,
+        PICKUP_TIME TIME 
+    ) ;
+
+      INSERT INTO CUSTOMERS VALUES
+  (1, 'Fang', 'fangpich@gmail.com', '085-989-8558'),
+  (2, 'Fha', 'fha.ll@hotmail.com', '084-552-6363'),
+  (3, 'John', 'hnil@gmail.com', '081-444-5565'),
+  (4, 'Lisa', 'lisa@gmail.com', '084-568-6666'),
+  (5, 'Kim', 'Kim@hotmail.com', '085-878-8985'),
+  (6, 'Jisung', 'jisung@gmail.com', '086-888-8888'),
+  (7, 'Jeno', 'Jeno@gmail.com', '085-522-4586'),
+  (8, 'Mark', 'mark@gmail.com', '085-989-8888'),
+  (9, 'Kai', 'kai@gmail.com', '085-878-8558'),
+  (10, 'Phu', 'Phu.tatchai@gmail.com', '087-659-9999');
+
+    INSERT INTO ORDERING_MENU VALUES
+   (1,001, 'BeefBurger','BURGER',2,'23'),
+   (1,001,'FishBurger' ,'BURGER',1,'10'),
+   (1,001,'Milksheak','BEVERAGE',1,'2.5'),
+   (2,002,'SpicyBurger','BURGER' ,1,'18') ,
+   (3,003,'ApplePie','Dessert',4,'25'),
+   (4,004,'HawaianBurger','BURGER',3,'50'),
+   (4,004,'BerryIceCream','DESERT',1,'6' ),
+   (5,005, 'BeefBurger','BURGER',2,'23'),
+   (5,005,'Milksheak','BEVERAGE',1,'2.5'),
+   (6,006,'CreamyMushroom','BURGER',5,'79'),
+   (6,006,'FrenceFrice','APPETIZER',5,'12'),
+   (6,006,'BerryIceCream','DESERT ',3,'5'),
+   (7,007,'Coleslaw','APPETIZER',4,'15'),
+   (7,007,'Milksheak','BEVERAGE',4,'2.5'),
+   (8,008,'SoftDrink','BEVERAGE',1,'5'),
+   (9,009,'BarbequeBurger','BURGER',2,'40'),
+   (10,010,'ApplePie','Dessert',4,'25'),
+   (10,010,'HawaianBurger','BURGER',4,'50'),
+    (10,010, 'BeefBurger','BURGER',4,'23') ;
+
+      INSERT INTO ORDER_SHIPPING VALUES
+    (1, 001, '2023-11-23', ('09:30:20'), '2023-11-23',('10:00:00')),
+     (2,002, '2023-11-23', ('08:30:25'), '2023-11-23',('11:08:06')),
+     (3,003, '2023-11-23', ('07:20:55'), '2023-11-23',('12:38:46')),
+     (4,004, '2023-11-22', ('10:05:55'), '2023-11-23',('12:34:06')),
+      (5,005, '2023-11-25', ('08:30:25'), '2023-11-25',('12:32:46')),
+     (6,006, '2023-11-23',('07:20:55'), '2023-11-23',('12:38:46')),
+      (7,007, '2023-11-20', ('17:20:55'), '2023-11-20',('18:32:41')),
+      (8,008, '2023-11-18', ('16:21:52'), '2023-11-19',('18:31:45')),
+       (9,009, '2023-11-25', ('08:30:25'), '2023-11-25',('12:32:46')),
+       (10,010, '2023-11-23', ('08:30:25'), '2023-11-23',('11:08:06'))
+
+
+     ;
+
+SELECT
+menu,
+unit,
+price,
+unit*price as Total_$
+
+FROM
+ORDERING_MENU
+
+
+SELECT
+  CUSTOMERS.name,
+  CUSTOMERS.phone,
+  ORDERING_MENU.menu_id,
+  ORDERING_MENU.menu,
+  ORDERING_MENU.category,
+  ORDERING_MENU.unit,
+  ORDERING_MENU.price,
+  ORDER_SHIPPING.order_date,
+  ORDER_SHIPPING.order_time,
+  ORDER_SHIPPING.pickup_date,
+  ORDER_SHIPPING.pickup_time
+FROM CUSTOMERS
+JOIN ORDERING_MENU
+  ON CUSTOMERS.customer_id = ORDERING_MENU.customer_id
+JOIN ORDER_SHIPPING
+  ON CUSTOMERS.customer_id = ORDER_SHIPPING.customer_id
+WHERE order_date >= '2023-11-23';
+
+
+SELECT
+  CUSTOMERS.name,
+  CUSTOMERS.phone,
+  ORDERING_MENU.menu_id,
+  ORDERING_MENU.menu,
+  ORDERING_MENU.category,
+  ORDERING_MENU.unit,
+  ORDERING_MENU.price,
+  ORDER_SHIPPING.order_date,
+  ORDER_SHIPPING.order_time,
+  ORDER_SHIPPING.pickup_date,
+  ORDER_SHIPPING.pickup_time
+FROM CUSTOMERS
+JOIN ORDERING_MENU
+  ON CUSTOMERS.customer_id = ORDERING_MENU.customer_id
+JOIN ORDER_SHIPPING
+  ON CUSTOMERS.customer_id = ORDER_SHIPPING.customer_id;
+
+
+SELECT
+  ORDERING_MENU.menu,
+  ORDERING_MENU.category,
+  ORDER_SHIPPING.order_time,
+  CASE
+    WHEN ORDER_SHIPPING.order_time >= '06:00:00' AND ORDER_SHIPPING.order_time < '09:00:00' THEN 'Breakfast'
+    WHEN ORDER_SHIPPING.order_time >= '10:00:00' AND ORDER_SHIPPING.order_time < '12:00:00' THEN 'Brunch'
+    ELSE 'Dinner'
+  END AS time_sale
+FROM ORDER_SHIPPING
+JOIN ORDERING_MENU 
+ON ORDER_SHIPPING.customer_id = ORDERING_MENU.customer_id
+AND ORDER_SHIPPING.menu_id = ORDERING_MENU.menu_id
+ORDER BY ORDER_SHIPPING.order_time ASC;
+
+
+
+SELECT
+  ORDERING_MENU.menu,
+  ORDERING_MENU.category,
+  ORDER_SHIPPING.order_time,
+  CASE WHEN ORDER_SHIPPING.order_time >= '06:00:00' THEN 'Breakfast'
+       WHEN ORDER_SHIPPING.order_time >= '11:00:00' THEN 'Brunch'
+       ELSE 'Lunch'
+  END AS time_sale
+FROM ORDER_SHIPPING
+JOIN ORDERING_MENU ON ORDER_SHIPPING.customer_id = ORDERING_MENU.customer_id 
+  AND ORDER_SHIPPING.menu_id = ORDERING_MENU.menu_id
+ORDER BY ORDER_SHIPPING.order_time ASC;
+
+
+SELECT
+  menu,
+  COUNT(*) AS No_of_menu
+FROM ORDERING_MENU
+GROUP BY 1
+ORDER BY 2 DESC;
